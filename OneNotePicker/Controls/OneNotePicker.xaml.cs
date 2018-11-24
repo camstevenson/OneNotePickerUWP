@@ -25,6 +25,14 @@ namespace OneNotePicker.Controls
     /// </summary>
     public sealed partial class OneNotePicker
     {
+        public EventHandler OnLoggedIn;
+
+        public EventHandler OnLoggedOut;
+
+        public EventHandler OnBusyStart;
+
+        public EventHandler OnBusyEnd;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="OneNotePicker"/> class.
         /// </summary>
@@ -46,6 +54,8 @@ namespace OneNotePicker.Controls
         /// </returns>
         public async Task Start(string clientId)
         {
+            bool loginSuccess = false;
+
             MicrosoftGraphService.Instance.AuthenticationModel = MicrosoftGraphEnums.AuthenticationModel.V2;
             MicrosoftGraphService.Instance.SignInFailed += async (ss, se) =>
             {
@@ -54,7 +64,7 @@ namespace OneNotePicker.Controls
             };
 
             // Initialize the service.  We really only need read access.
-            string[] scopes = { "Notes.Read" };
+            string[] scopes = { "User.Read", "Notes.Read" };
             if (!MicrosoftGraphService.Instance.Initialize(
                     clientId,
                     MicrosoftGraphEnums.ServicesToInitialize.Message | MicrosoftGraphEnums.ServicesToInitialize.UserProfile | MicrosoftGraphEnums.ServicesToInitialize.Event,
@@ -62,6 +72,8 @@ namespace OneNotePicker.Controls
             {
                 return;
             }
+
+            this.OnBusyStart?.Invoke(this, EventArgs.Empty);
 
             // Login
             try
@@ -72,29 +84,48 @@ namespace OneNotePicker.Controls
                     await error.ShowAsync();
                     return;
                 }
+
+                loginSuccess = true;
             }
             catch (AdalServiceException ase)
             {
                 var error = new MessageDialog(ase.Message);
                 await error.ShowAsync();
-                return;
             }
             catch (AdalException ae)
             {
                 var error = new MessageDialog(ae.Message);
                 await error.ShowAsync();
-                return;
             }
             catch (MsalServiceException mse)
             {
                 var error = new MessageDialog(mse.Message);
                 await error.ShowAsync();
-                return;
             }
             catch (MsalException me)
             {
                 var error = new MessageDialog(me.Message);
                 await error.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                var error = new MessageDialog(ex.Message);
+                await error.ShowAsync();
+            }
+
+            if (!loginSuccess)
+            {
+                // Just in case it was a perms error, let's not leave the user logged in
+                try
+                {
+                    await MicrosoftGraphService.Instance.Logout();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
@@ -115,6 +146,9 @@ namespace OneNotePicker.Controls
                     this.NotebooksList.Items.Add(notebook);
                 }
             }
+
+            this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
+            this.OnLoggedIn?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -128,6 +162,8 @@ namespace OneNotePicker.Controls
             {
                 if (e.AddedItems[0] is Notebook notebook)
                 {
+                    this.OnBusyStart?.Invoke(this, EventArgs.Empty);
+
                     var sections = await MicrosoftGraphService
                                        .Instance
                                        .GraphProvider
@@ -148,6 +184,8 @@ namespace OneNotePicker.Controls
                             this.SectionsList.Items.Add(section);
                         }
                     }
+
+                    this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -163,6 +201,8 @@ namespace OneNotePicker.Controls
             {
                 if (e.AddedItems[0] is OnenoteSection section)
                 {
+                    this.OnBusyStart?.Invoke(this, EventArgs.Empty);
+
                     var pages = await MicrosoftGraphService
                                     .Instance
                                     .GraphProvider
@@ -182,6 +222,8 @@ namespace OneNotePicker.Controls
                             this.PagesList.Items.Add(page);
                         }
                     }
+
+                    this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -197,6 +239,8 @@ namespace OneNotePicker.Controls
             {
                 if (e.AddedItems[0] is OnenotePage page)
                 {
+                    this.OnBusyStart?.Invoke(this, EventArgs.Empty);
+
                     var contentStream = await MicrosoftGraphService
                                             .Instance
                                             .GraphProvider
@@ -214,7 +258,17 @@ namespace OneNotePicker.Controls
                         contentStr = reader.ReadToEnd();
                     }
 
+                    this.PageTitle.Text = page.Title;
+                    if (page.LastModifiedDateTime != null)
+                    {
+                        this.PageDate.Text = ((DateTimeOffset)page.LastModifiedDateTime).DateTime.ToLongDateString() +
+                                             " " +
+                                             ((DateTimeOffset)page.LastModifiedDateTime).DateTime.ToShortTimeString();
+                    }
+
                     this.Preview.NavigateToString(contentStr);
+
+                    this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

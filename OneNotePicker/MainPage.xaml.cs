@@ -14,6 +14,9 @@ namespace OneNotePicker
         public MainPage()
         {
             this.InitializeComponent();
+
+            this.NotePicker.OnBusyStart += (sender, args) => this.BusyIndicator.IsActive = true;
+            this.NotePicker.OnBusyEnd += (sender, args) => this.BusyIndicator.IsActive = false;
         }
 
         private async void LoginButton_OnClick(object sender, RoutedEventArgs e)

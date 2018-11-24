@@ -11,31 +11,64 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15*"></ColumnDefinition>
+            <ColumnDefinition Width="12"></ColumnDefinition>
             <ColumnDefinition Width="15*"></ColumnDefinition>
+            <ColumnDefinition Width="12"></ColumnDefinition>
             <ColumnDefinition Width="15*"></ColumnDefinition>
+            <ColumnDefinition Width="12"></ColumnDefinition>
             <ColumnDefinition Width="55*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="NotebooksList" Grid.Column="0">
+        <ListView x:Name="NotebooksList" Grid.Column="0" Background="{StaticResource SystemControlBackgroundListLowBrush}">
+            <ListView.Header>
+                <Grid Padding="12,0,12,0" Height="40">
+                    <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="Notebook"/>
+                </Grid>
+            </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding DisplayName}"></TextBlock>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView x:Name="SectionsList" Grid.Column="1">
+        <ListView x:Name="SectionsList" Grid.Column="2" Background="{StaticResource SystemControlBackgroundListLowBrush}">
+            <ListView.Header>
+                <Grid Padding="12,0,12,0" Height="40">
+                    <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="Section"/>
+                </Grid>
+            </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding DisplayName}"></TextBlock>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView x:Name="PagesList" Grid.Column="2">
+        <ListView x:Name="PagesList" Grid.Column="4" Background="{StaticResource SystemControlBackgroundListLowBrush}">
+            <ListView.Header>
+                <Grid Padding="12,0,12,0" Height="40">
+                    <TextBlock VerticalAlignment="Center" FontWeight="Bold" Text="Page"/>
+                </Grid>
+            </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Title}"></TextBlock>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <WebView x:Name="Preview" Grid.Column="3"></WebView>
+        <Grid Grid.Column="6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Padding="12,0,12,0" Height="40" Background="{StaticResource SystemControlBackgroundListLowBrush}">
+                <TextBlock x:Name="PageTitle" VerticalAlignment="Center" FontWeight="Bold"/>
+            </Grid>
+            <Grid Grid.Row="1" Padding="12,0,12,0" Height="24" Background="{StaticResource SystemControlBackgroundListMediumBrush}">
+                <TextBlock x:Name="PageDate" FontSize="12" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="2" Background="White">
+                <WebView x:Name="Preview"/>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
