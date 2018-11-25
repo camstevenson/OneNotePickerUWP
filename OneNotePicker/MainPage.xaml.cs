@@ -11,19 +11,38 @@ namespace OneNotePicker
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private bool loggedIn;
+
         public MainPage()
         {
             this.InitializeComponent();
 
             this.NotePicker.OnBusyStart += (sender, args) => this.BusyIndicator.IsActive = true;
             this.NotePicker.OnBusyEnd += (sender, args) => this.BusyIndicator.IsActive = false;
+            this.NotePicker.OnLoggedIn += (sender, args) =>
+                {
+                    this.loggedIn = true;
+                    this.LoginLogoutButton.Content = "Log Out";
+                };
+            this.NotePicker.OnLoggedOut += (sender, args) =>
+                {
+                    this.loggedIn = false;
+                    this.LoginLogoutButton.Content = "Log In";
+                };
         }
 
-        private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        private async void LoginLogoutButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(this.ClientId.Text))
+            if (!this.loggedIn)
             {
-                await this.NotePicker.Start(this.ClientId.Text);
+                if (!string.IsNullOrEmpty(this.ClientId.Text))
+                {
+                    await this.NotePicker.Start(this.ClientId.Text);
+                }
+            }
+            else
+            {
+                this.NotePicker.Logout();
             }
         }
     }

@@ -52,7 +52,7 @@ namespace OneNotePicker.Controls
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task Start(string clientId)
+        public async Task<bool> Start(string clientId)
         {
             bool loginSuccess = false;
 
@@ -70,7 +70,7 @@ namespace OneNotePicker.Controls
                     MicrosoftGraphEnums.ServicesToInitialize.Message | MicrosoftGraphEnums.ServicesToInitialize.UserProfile | MicrosoftGraphEnums.ServicesToInitialize.Event,
                     scopes))
             {
-                return;
+                return false;
             }
 
             this.OnBusyStart?.Invoke(this, EventArgs.Empty);
@@ -82,7 +82,7 @@ namespace OneNotePicker.Controls
                 {
                     var error = new MessageDialog("Unable to sign in");
                     await error.ShowAsync();
-                    return;
+                    return false;
                 }
 
                 loginSuccess = true;
@@ -115,18 +115,9 @@ namespace OneNotePicker.Controls
 
             if (!loginSuccess)
             {
-                // Just in case it was a perms error, let's not leave the user logged in
-                try
-                {
-                    await MicrosoftGraphService.Instance.Logout();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
+                this.Logout();
                 this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
-                return;
+                return false;
             }
 
             // Populate the list of notebooks
@@ -149,6 +140,21 @@ namespace OneNotePicker.Controls
 
             this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
             this.OnLoggedIn?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
+        public async void Logout()
+        {
+            try
+            {
+                await MicrosoftGraphService.Instance.Logout();
+                this.OnLoggedOut?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         /// <summary>

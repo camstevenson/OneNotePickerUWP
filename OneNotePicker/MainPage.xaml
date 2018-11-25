@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" VerticalAlignment="Center" Padding="0,0,16,0">Application ID</TextBlock>
             <TextBox x:Name="ClientId" Grid.Column="1"></TextBox>
-            <Button x:Name="LoginButton" Grid.Column="2" Margin="16,0,0,0" Click="LoginButton_OnClick">Login</Button>
+            <Button x:Name="LoginLogoutButton" Grid.Column="2" Margin="16,0,0,0" Click="LoginLogoutButton_OnClick">Log In</Button>
         </Grid>
         <controls:OneNotePicker x:Name="NotePicker" Grid.Row="1"></controls:OneNotePicker>
         <ProgressRing x:Name="BusyIndicator" Grid.RowSpan="2" Width="100" Height="100" VerticalAlignment="Center" HorizontalAlignment="Center"></ProgressRing>
