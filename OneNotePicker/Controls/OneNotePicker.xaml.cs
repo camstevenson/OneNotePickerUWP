@@ -11,6 +11,7 @@
 namespace OneNotePicker.Controls
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using Microsoft.Graph;
@@ -25,12 +26,24 @@ namespace OneNotePicker.Controls
     /// </summary>
     public sealed partial class OneNotePicker
     {
+        /// <summary>
+        /// Invoked when the user has been successfully logged in.
+        /// </summary>
         public EventHandler OnLoggedIn;
 
+        /// <summary>
+        /// Invoked when the user has been logged out.
+        /// </summary>
         public EventHandler OnLoggedOut;
 
+        /// <summary>
+        /// Invoked when a Graph operation begins.
+        /// </summary>
         public EventHandler OnBusyStart;
 
+        /// <summary>
+        /// Invoked when a Graph operation ends.
+        /// </summary>
         public EventHandler OnBusyEnd;
 
         /// <summary>
@@ -144,6 +157,9 @@ namespace OneNotePicker.Controls
             return true;
         }
 
+        /// <summary>
+        /// Log the user out.
+        /// </summary>
         public async void Logout()
         {
             try
@@ -247,6 +263,9 @@ namespace OneNotePicker.Controls
                 {
                     this.OnBusyStart?.Invoke(this, EventArgs.Empty);
 
+                    List<QueryOption> contentOptions =
+                        new List<QueryOption> { new QueryOption("preAuthenticated", "true") };
+
                     var contentStream = await MicrosoftGraphService
                                             .Instance
                                             .GraphProvider
@@ -254,7 +273,7 @@ namespace OneNotePicker.Controls
                                             .Onenote
                                             .Pages[page.Id]
                                             .Content
-                                            .Request()
+                                            .Request(contentOptions)
                                             .GetAsync();
 
                     string contentStr;

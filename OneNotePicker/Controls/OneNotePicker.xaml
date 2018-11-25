@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -11,11 +12,11 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15*"></ColumnDefinition>
-            <ColumnDefinition Width="12"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="15*"></ColumnDefinition>
-            <ColumnDefinition Width="12"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="15*"></ColumnDefinition>
-            <ColumnDefinition Width="12"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="55*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <ListView x:Name="NotebooksList" Grid.Column="0" Background="{StaticResource SystemControlBackgroundListLowBrush}">
@@ -30,6 +31,16 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <controls:GridSplitter Grid.Column="1" Width="11" ResizeBehavior="BasedOnAlignment"
+                              ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13">
+            <controls:GridSplitter.Element>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Center" IsHitTestVisible="False" VerticalAlignment="Center"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                    </TextBlock>
+                </Grid>
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
         <ListView x:Name="SectionsList" Grid.Column="2" Background="{StaticResource SystemControlBackgroundListLowBrush}">
             <ListView.Header>
                 <Grid Padding="12,0,12,0" Height="40">
@@ -42,6 +53,16 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <controls:GridSplitter Grid.Column="3" Width="11" ResizeBehavior="BasedOnAlignment"
+                               ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13">
+            <controls:GridSplitter.Element>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Center" IsHitTestVisible="False" VerticalAlignment="Center"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                    </TextBlock>
+                </Grid>
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
         <ListView x:Name="PagesList" Grid.Column="4" Background="{StaticResource SystemControlBackgroundListLowBrush}">
             <ListView.Header>
                 <Grid Padding="12,0,12,0" Height="40">
@@ -54,6 +75,16 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <controls:GridSplitter Grid.Column="5" Width="11" ResizeBehavior="BasedOnAlignment"
+                               ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13">
+            <controls:GridSplitter.Element>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Center" IsHitTestVisible="False" VerticalAlignment="Center"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                    </TextBlock>
+                </Grid>
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
         <Grid Grid.Column="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
