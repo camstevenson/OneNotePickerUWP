@@ -2,7 +2,7 @@
     x:Class="OneNotePicker.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:OneNotePicker.Controls"
+    xmlns:controls="using:OLY.OneNotePicker.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" VerticalAlignment="Center" Padding="0,0,16,0">Application ID</TextBlock>
             <TextBox x:Name="ClientId" Grid.Column="1"></TextBox>
-            <Button x:Name="LoginLogoutButton" Grid.Column="2" Margin="16,0,0,0" Click="LoginLogoutButton_OnClick">Log In</Button>
+            <Button x:Name="LoginLogoutButton" Grid.Column="2" Margin="16,0,0,0" Click="LoginLogoutButton_OnClick">Login</Button>
         </Grid>
         <controls:OneNotePicker x:Name="NotePicker" Grid.Row="1"></controls:OneNotePicker>
         <ProgressRing x:Name="BusyIndicator" Grid.RowSpan="2" Width="100" Height="100" VerticalAlignment="Center" HorizontalAlignment="Center"></ProgressRing>

@@ -8,7 +8,7 @@
 // 
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace OneNotePicker.Controls
+namespace OLY.OneNotePicker.Controls
 {
     using System;
     using System.Collections.Generic;
@@ -18,6 +18,7 @@ namespace OneNotePicker.Controls
     using Microsoft.Identity.Client;
     using Microsoft.IdentityModel.Clients.ActiveDirectory;
     using Microsoft.Toolkit.Services.MicrosoftGraph;
+    using OLY.OneNotePicker.Models;
     using Windows.UI.Popups;
     using Windows.UI.Xaml.Controls;
 
@@ -47,6 +48,11 @@ namespace OneNotePicker.Controls
         public EventHandler OnBusyEnd;
 
         /// <summary>
+        /// Invoked when the selected OneNote page changes.
+        /// </summary>
+        public EventHandler SelectedPageChanged;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="OneNotePicker"/> class.
         /// </summary>
         public OneNotePicker()
@@ -57,6 +63,8 @@ namespace OneNotePicker.Controls
             this.SectionsList.SelectionChanged += this.SectionsListOnSelectionChanged;
             this.PagesList.SelectionChanged += this.PagesListOnSelectionChanged;
         }
+
+        public SelectedPage SelectedPage { get; private set; }
 
         /// <summary>
         /// Initialize the MSGraph session, populate the notebooks list box.
@@ -283,17 +291,29 @@ namespace OneNotePicker.Controls
                         contentStr = reader.ReadToEnd();
                     }
 
-                    this.PageTitle.Text = page.Title;
-                    if (page.LastModifiedDateTime != null)
+                    this.SelectedPage = new SelectedPage
+                                            {
+                                                Title = page.Title,
+                                                Modified = page.LastModifiedDateTime?.DateTime ?? DateTime.MinValue,
+                                                Content = contentStr
+                                            };
+
+                    this.PageTitle.Text = this.SelectedPage.Title;
+                    if (this.SelectedPage.Modified != DateTime.MinValue)
                     {
-                        this.PageDate.Text = ((DateTimeOffset)page.LastModifiedDateTime).DateTime.ToLongDateString() +
+                        this.PageDate.Text = this.SelectedPage.Modified.ToLongDateString() +
                                              " " +
-                                             ((DateTimeOffset)page.LastModifiedDateTime).DateTime.ToShortTimeString();
+                                             this.SelectedPage.Modified.ToShortTimeString();
+                    }
+                    else
+                    {
+                        this.PageDate.Text = string.Empty;
                     }
 
-                    this.Preview.NavigateToString(contentStr);
+                    this.Preview.NavigateToString(this.SelectedPage.Content);
 
                     this.OnBusyEnd?.Invoke(this, EventArgs.Empty);
+                    this.SelectedPageChanged?.Invoke(this,EventArgs.Empty);
                 }
             }
         }
