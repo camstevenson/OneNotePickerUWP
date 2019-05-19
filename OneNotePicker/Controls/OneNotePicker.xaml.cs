@@ -173,6 +173,12 @@ namespace OLY.OneNotePicker.Controls
             try
             {
                 await MicrosoftGraphService.Instance.Logout();
+                this.NotebooksList?.Items?.Clear();
+                this.SectionsList?.Items?.Clear();
+                this.PagesList?.Items?.Clear();
+                this.PageTitle.Text = string.Empty;
+                this.PageDate.Text = string.Empty;
+                this.Preview.NavigateToString(string.Empty);
                 this.OnLoggedOut?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception)
